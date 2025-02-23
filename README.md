@@ -1,4 +1,8 @@
 ```bash
+poetry run pre-commit install
+```
+
+```bash
 poetry run pytest
 ```
 
