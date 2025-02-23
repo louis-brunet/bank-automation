@@ -1,8 +1,6 @@
 import base64
 import logging
 import os
-import unittest.mock
-
 
 from bank_automation.containers import ApplicationContainer
 
@@ -13,26 +11,24 @@ class TestDigitRecognitionService:
     def test_recognize_image_from_base64(
         self,
         application: ApplicationContainer,
-        web_driver_mock: unittest.mock.Mock,
     ):
-        with application.web_driver.override(web_driver_mock):
-            recognizer = application.digit_recognition_service()
+        recognizer = application.digit_recognition_service()
 
-            base64_images = [
-                self._convert_file_to_base64(
-                    os.path.join(
-                        os.path.join(os.path.dirname(__file__), "images"),
-                        f"digit_{digit}.png",
-                    )
+        base64_images = [
+            self._convert_file_to_base64(
+                os.path.join(
+                    os.path.join(os.path.dirname(__file__), "images"),
+                    f"digit_{digit}.png",
                 )
-                for digit in range(10)
-            ]
+            )
+            for digit in range(10)
+        ]
 
-            for index, base64_image in enumerate(base64_images):
-                expected_digit = index
-                digit = recognizer.recognize_digit_from_base64(base64_image)
+        for index, base64_image in enumerate(base64_images):
+            expected_digit = index
+            digit = recognizer.recognize_digit_from_base64(base64_image)
 
-                assert digit == expected_digit
+            assert digit == expected_digit
 
     def _convert_file_to_base64(self, file_path: str) -> str:
         logger = module_logger.getChild(self._convert_file_to_base64.__name__)
