@@ -1,7 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from bank_automation import CurrencyType
 
 
 class DigitRecognitionSettings(BaseSettings):

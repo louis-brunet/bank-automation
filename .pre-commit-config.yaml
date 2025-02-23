@@ -6,8 +6,15 @@ repos:
       - id: poetry-lock
       # - id: poetry-export
       - id: poetry-install
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.9.7"
+  - repo: local
     hooks:
-      - id: ruff
+      - id: ruff-fix
+        name: Run ruff check --fix
+        entry: poetry run ruff check --fix --show-fixes
+        language: system
+        types: [python]
       - id: ruff-format
+        name: Run ruff format
+        entry: poetry run ruff format --force-exclude
+        language: system
+        types: [python]

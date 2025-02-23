@@ -1,8 +1,5 @@
 import logging
-import os.path
 import base64
-
-from bank_automation.services.digit_recognition_service import DigitRecognitionService
 
 
 module_logger = logging.getLogger("TestDigitRecognitionService")

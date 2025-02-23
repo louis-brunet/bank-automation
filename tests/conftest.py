@@ -1,7 +1,6 @@
 import pytest
 import unittest.mock
 import selenium.webdriver
-from selenium.webdriver.chrome.webdriver import WebDriver
 
 from bank_automation.containers import ApplicationContainer
 
