@@ -8,7 +8,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from bank_automation import Currency, CurrencyType
 from bank_automation.errors.banking_errors import PasswordOcrError, PasswordParseError
-from bank_automation.services.browser_service import BrowserService
+from bank_automation.infra.browser_service import BrowserService
 from bank_automation.services.digit_recognition_service import DigitRecognitionService
 from bank_automation.settings import CaisseDEpargneSettings
 
@@ -49,36 +49,6 @@ class CaisseDEpargneAdapter:
         assert config.account_password is not None
         assert isinstance(config.account_password, str)
         assert len(config.account_password) > 0
-
-    def _get_base64_from_background_image(self, background_image: str) -> str:
-        matched = re.search(r'url\("data:image/png;base64,(.*)"\)', background_image)
-        if matched:
-            return matched.group(1)
-        raise ValueError(
-            f"could not get base64 from background image value: {background_image}"
-        )
-
-    def _get_button_value(self, background_image: str) -> int | None:
-        image_base64 = self._get_base64_from_background_image(background_image)
-        button_value = self.digit_recognition_service.recognize_digit_from_base64(
-            image_base64
-        )
-        return button_value
-
-    def _sort_buttons(self, buttons: list[WebElement]) -> list[WebElement]:
-        button_values: list[tuple[int, WebElement]] = []
-
-        for button in buttons:
-            background_image = button.value_of_css_property("background-image")
-            button_value = self._get_button_value(background_image)
-            if button_value is None:
-                raise PasswordOcrError(background_image)
-            button_values.append((button_value, button))
-
-        ordered_buttons = [
-            button for _, button in sorted(button_values, key=lambda x: x[0])
-        ]
-        return ordered_buttons
 
     async def get_checking_account_balance(self) -> float:
         account_id = self.config.checking_account
@@ -209,6 +179,36 @@ class CaisseDEpargneAdapter:
                 raise CaisseDEpargneAccountNotFoundError(expected_key)
 
         return account_balances
+
+    def _get_base64_from_background_image(self, background_image: str) -> str:
+        matched = re.search(r'url\("data:image/png;base64,(.*)"\)', background_image)
+        if matched:
+            return matched.group(1)
+        raise ValueError(
+            f"could not get base64 from background image value: {background_image}"
+        )
+
+    def _get_button_value(self, background_image: str) -> int | None:
+        image_base64 = self._get_base64_from_background_image(background_image)
+        button_value = self.digit_recognition_service.recognize_digit_from_base64(
+            image_base64
+        )
+        return button_value
+
+    def _sort_buttons(self, buttons: list[WebElement]) -> list[WebElement]:
+        button_values: list[tuple[int, WebElement]] = []
+
+        for button in buttons:
+            background_image = button.value_of_css_property("background-image")
+            button_value = self._get_button_value(background_image)
+            if button_value is None:
+                raise PasswordOcrError(background_image)
+            button_values.append((button_value, button))
+
+        ordered_buttons = [
+            button for _, button in sorted(button_values, key=lambda x: x[0])
+        ]
+        return ordered_buttons
 
     def _get_balance_from_raw_parts(self, balance_span_contents: list[str]) -> float:
         logger = self.logger.getChild(self._get_balance_from_raw_parts.__name__)

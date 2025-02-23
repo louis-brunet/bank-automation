@@ -9,7 +9,7 @@ from bank_automation.adapters.caisse_d_epargne_adapter import (
     CaisseDEpargneAdapter,
 )
 from bank_automation.services.banking_service import BankingService
-from bank_automation.services.browser_service import BrowserService
+from bank_automation.infra.browser_service import BrowserService
 from bank_automation.services.digit_recognition_service import DigitRecognitionService
 from bank_automation.settings import (
     CaisseDEpargneSettings,

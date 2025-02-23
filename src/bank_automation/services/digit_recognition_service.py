@@ -7,7 +7,9 @@ from bank_automation.settings import DigitRecognitionSettings
 
 
 class DigitRecognitionService(BaseService):
-    def __init__(self, reader: easyocr.Reader, config: DigitRecognitionSettings) -> None:
+    def __init__(
+        self, reader: easyocr.Reader, config: DigitRecognitionSettings
+    ) -> None:
         self.reader = reader
         self.config = config
         super().__init__()
@@ -60,4 +62,3 @@ class DigitRecognitionService(BaseService):
         logger.debug(f"removed {len(input_bytes) - len(output_bytes)} bytes")
 
         return output_bytes
-

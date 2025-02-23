@@ -8,4 +8,3 @@ class PasswordOcrError(ValueError):
         super().__init__(
             f"Could not recognize password button image digit with OCR from the following value: {cssBackgroundImage}"
         )
-
